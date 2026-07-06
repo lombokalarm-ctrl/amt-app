@@ -7,9 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app # Mengarahkan GitHub agar masuk ke folder proyek Anda
 
     steps:
     - uses: actions/checkout@v4
@@ -21,19 +18,29 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    # Menemukan letak folder proyek secara otomatis dan membuat file .env tiruan
     - name: Create Mock .env File
       run: |
-        echo "API_URL=https://example.com" > .env
-        echo "API_KEY=mock_key" >> .env
+        GRADLE_DIR=$(find . -name "gradlew" -exec dirname {} \;)
+        echo "Project found in: $GRADLE_DIR"
+        echo "API_URL=https://example.com" > "$GRADLE_DIR/.env"
+        echo "API_KEY=mock_key" >> "$GRADLE_DIR/.env"
+        echo "GRADLE_PATH=$GRADLE_DIR" >> $GITHUB_ENV
 
+    # Memberikan izin eksekusi menggunakan path otomatis yang ditemukan
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: chmod +x ${{ env.GRADLE_PATH }}/gradlew
       
+    # Menjalankan build dari folder proyek tersebut
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
+      run: |
+        cd ${{ env.GRADLE_PATH }}
+        ./gradlew assembleDebug
 
+    # Mengunggah hasil APK yang berhasil dibuat
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: app/app/build/outputs/apk/debug/app-debug.apk
+        path: |
+          **/build/outputs/apk/debug/*.apk
