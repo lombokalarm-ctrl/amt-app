@@ -1,0 +1,6 @@
+{
+  "name": "UmrahHajj Manager",
+  "description": "Sistem Informasi Manajemen Travel Umroh dan Haji dengan fitur utama manajemen jamaah, jadwal keberangkatan, dan pembayaran terintegrasi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
