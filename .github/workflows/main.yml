@@ -18,26 +18,17 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # Menemukan letak folder proyek secara otomatis dan membuat file .env tiruan
-    - name: Create Mock .env File
+    # Membuat file .env di folder utama repositori
+    - name: Create .env File
       run: |
-        GRADLE_DIR=$(find . -name "gradlew" -exec dirname {} \;)
-        echo "Project found in: $GRADLE_DIR"
-        echo "API_URL=https://example.com" > "$GRADLE_DIR/.env"
-        echo "API_KEY=mock_key" >> "$GRADLE_DIR/.env"
-        echo "GRADLE_PATH=$GRADLE_DIR" >> $GITHUB_ENV
+        echo "API_URL=https://example.com" > .env
+        echo "API_KEY=mock_key" >> .env
 
-    # Memberikan izin eksekusi menggunakan path otomatis yang ditemukan
-    - name: Grant execute permission for gradlew
-      run: chmod +x ${{ env.GRADLE_PATH }}/gradlew
-      
-    # Menjalankan build dari folder proyek tersebut
+    # Melakukan build menggunakan gradle sistem (bukan ./gradlew)
     - name: Build with Gradle
-      run: |
-        cd ${{ env.GRADLE_PATH }}
-        ./gradlew assembleDebug
+      run: gradle assembleDebug
 
-    # Mengunggah hasil APK yang berhasil dibuat
+    # Mengunggah hasil APK jika berhasil dibuat
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
