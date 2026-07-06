@@ -18,13 +18,23 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # Membuat file .env di folder utama repositori
-    - name: Create .env File
+    # 1. Membuat file .env tiruan
+    # 2. Membuat file debug.keystore tiruan langsung di tempat yang dicari oleh gradle
+    # 3. Membuat file google-services.json kosong jika dibutuhkan oleh plugin
+    <button class="suggest-edit-btn" data-file-path=".github/workflows/main.yml">Edit File</button>
+    - name: Setup Mock Environment & Keystore
       run: |
         echo "API_URL=https://example.com" > .env
         echo "API_KEY=mock_key" >> .env
+        
+        # Membuat debug.keystore otomatis agar lolos validasi signing config
+        keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+        
+        # Membuat file mock google-services.json kosong agar plugin firebase tidak komplain
+        mkdir -p app/src/google
+        echo "{}" > app/google-services.json
 
-    # Melakukan build menggunakan gradle sistem (bukan ./gradlew)
+    # Melakukan build menggunakan gradle sistem
     - name: Build with Gradle
       run: gradle assembleDebug
 
