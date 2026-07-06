@@ -17,7 +17,7 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # Langkah Tambahan: Membuat file .env tiruan agar gradle tidak error
+    # Langkah penting: Membuat file .env tiruan agar gradle tidak error
     - name: Create Mock .env File
       run: |
         echo "API_URL=https://example.com" > .env
