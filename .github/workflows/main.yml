@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app # Mengarahkan GitHub agar masuk ke folder proyek Anda
+
     steps:
     - uses: actions/checkout@v4
     
@@ -17,7 +21,6 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # Langkah penting: Membuat file .env tiruan agar gradle tidak error
     - name: Create Mock .env File
       run: |
         echo "API_URL=https://example.com" > .env
@@ -33,4 +36,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: app/app/build/outputs/apk/debug/app-debug.apk
