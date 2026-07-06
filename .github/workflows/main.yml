@@ -17,6 +17,12 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    # Langkah Tambahan: Membuat file .env tiruan agar gradle tidak error
+    - name: Create Mock .env File
+      run: |
+        echo "API_URL=https://example.com" > .env
+        echo "API_KEY=mock_key" >> .env
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
